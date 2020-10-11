@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     UserListAdapter userListAdapter;
     FrameLayout UserPanel;
     TextView NameTextView, StateTextView, AgeTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         StateTextView = findViewById(R.id.StateTextView);
         AgeTextView = findViewById(R.id.AgeTextView);
 //        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        userListAdapter.notifyDataSetChanged();
+
     }
 
     public void BackToList(View view) {
@@ -63,10 +66,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void UserVisibility(boolean visible) {
-        if(visible)
+        if(visible) {
             UserPanel.setVisibility(View.VISIBLE);
-        else
+            listView.setVisibility(View.GONE);
+        }
+        else {
             UserPanel.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+        }
     }
 
     public class UserListAdapter extends BaseAdapter {
