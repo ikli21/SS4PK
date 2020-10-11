@@ -1,0 +1,2 @@
+rootProject.name='SS4PK'
+include ':app'
