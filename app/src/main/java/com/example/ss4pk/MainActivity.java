@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Layout;
 import android.view.LayoutInflater;
@@ -23,29 +24,38 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.ss4pk.UserStaticInfo.POSITION;
+import static com.example.ss4pk.UserStaticInfo.users;
+
 public class MainActivity extends AppCompatActivity {
 
     ListView listView;
-    List<User> users = new ArrayList<>();
+
     Context context;
     LayoutInflater layoutInflater;
-    UserListAdapter userListAdapter;
+    static UserListAdapter userListAdapter;
     FrameLayout UserPanel;
-    TextView NameTextView, StateTextView, AgeTextView;
+    static TextView NameTextView;
+    static TextView StateTextView;
+    static TextView AgeTextView;
+    private int positionActiveUser;
+
+    public static void UpdateListAndUserPanel(User user) {
+        userListAdapter.notifyDataSetChanged();
+        InitPanel(user);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        AddUsersInList();
+//        AddUsersInList();
+        new UserStaticInfo();
         initList();
     }
 
-    private void AddUsersInList() {
-        users.add(new User("A","Hooy",12, 1));
-        users.add(new User("Sus", "piz", 15,0));
-        users.add(new User("Sus", "piz", 15,2));
-    }
+
+
 
     private void initList() {
         listView = findViewById(R.id.lv);
@@ -61,6 +71,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void GoToUserProfile(int position)
+    {
+        Intent intent = new Intent(context, UserActivity.class);
+        intent.putExtra(POSITION,position);
+        startActivity(intent);
+    }
+
     public void BackToList(View view) {
         UserVisibility(false);
     }
@@ -74,6 +91,10 @@ public class MainActivity extends AppCompatActivity {
             UserPanel.setVisibility(View.GONE);
             listView.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void EditUser(View view) {
+        GoToUserProfile(positionActiveUser);
     }
 
     public class UserListAdapter extends BaseAdapter {
@@ -143,13 +164,14 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         InitPanel(getItem(position));
                         UserVisibility(true);
+                        positionActiveUser = position;
                     }
                 });
             return currentView;
         }
     }
 
-    private void InitPanel(User item) {
+    private static void InitPanel(User item) {
         NameTextView.setText(item.getName());
         StateTextView.setText(item.getState());
         AgeTextView.setText(String.valueOf(item.getAge()));

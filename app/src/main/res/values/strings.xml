@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">SS4PK</string>
+    <string name="nameHint" value="Имя" />
+    <string name="stateHint" value="Статус" />
+    <string name="save" value="Сохранить" />
+    <string name="ageHint" value="Возраст" />
 </resources>
