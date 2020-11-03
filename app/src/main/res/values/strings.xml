@@ -4,4 +4,11 @@
     <string name="stateHint" value="Статус" />
     <string name="save" value="Сохранить" />
     <string name="ageHint" value="Возраст" />
+    <string name="signIn">Входа</string>
+    <string name="passwordHint">пароль</string>
+    <string name="loginHint">логин</string>
+    <string name="CantSignInMessage">Неверный лоигн или пароль</string>
+    <string name="NullParametersMessage">Поля логин или пароль не заполнены</string>
+    <string name="goSignUp">Зарегистрироваться</string>
+    <string name="UserExistMessage">Пользователь уже существует</string>
 </resources>
