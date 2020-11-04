@@ -3,6 +3,9 @@ package com.example.ss4pk;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
@@ -17,10 +20,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import static com.example.ss4pk.Transform.APP_PREFERENCES;
+import static com.example.ss4pk.Transform.SaveUser;
 import static com.example.ss4pk.Transform.StringNoNull;
 import static com.example.ss4pk.Transform.Vibrate;
 import static com.example.ss4pk.Transform.md5Custom;
 import static com.example.ss4pk.UserStaticInfo.AGE;
+import static com.example.ss4pk.UserStaticInfo.LOGIN;
 import static com.example.ss4pk.UserStaticInfo.NAME;
 import static com.example.ss4pk.UserStaticInfo.PASSWORD;
 import static com.example.ss4pk.UserStaticInfo.PROFILE_ID;
@@ -36,6 +42,16 @@ public class SignActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign);
         Init();
+        CheckSignInfo();
+    }
+
+    private void CheckSignInfo() {
+        SharedPreferences sp = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        String login = sp.getString(LOGIN,"");
+        String password = sp.getString(PASSWORD,"");
+        LoginTextView.setText(login);
+        PasswordTextView.setText(password);
+        SignIn();
     }
 
     private void Init() {
@@ -60,6 +76,10 @@ public class SignActivity extends AppCompatActivity {
     }
 
     public void SignIn(View view){
+        SignIn();
+    }
+
+    public void SignIn(){
         if(EditTextNoNullAnimation(PasswordTextView)&&EditTextNoNullAnimation(LoginTextView)) {
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference myRef = database.getReference(USERS_SIGN_IN_INFO);
@@ -70,7 +90,7 @@ public class SignActivity extends AppCompatActivity {
                     Object value = dataSnapshot.child(login).child(PASSWORD).getValue();
                     if (value != null) {
                         if (value.toString().equals(getPassword())) {
-                            goNext(dataSnapshot.child(PROFILE_ID).toString());
+                            goNext(dataSnapshot.child(PROFILE_ID).toString(), login, getPassword());
                         } else CantSignIn();
                     } else CantSignIn();
                 }
@@ -99,8 +119,13 @@ public class SignActivity extends AppCompatActivity {
     private String getPassword(){
         return PasswordTextView.getText().toString() ;
     }
-    private void goNext(String profileId){
+    private void goNext(String profileId, String login, String password){
         UserStaticInfo.profileId = profileId;
+        SaveUser(getSharedPreferences(APP_PREFERENCES,Context.MODE_PRIVATE),
+                login,password);
+        Intent intent = new Intent(this, LoadedUserDataActivity.class);
+        startActivity(intent);
+        finish();
     }
     private String getNewPassword(){
         return NewPasswordTextView.getText().toString();
@@ -141,7 +166,7 @@ public class SignActivity extends AppCompatActivity {
                         database.getReference(USERS_SIGN_IN_INFO).child(id).child(AGE).setValue(getNewAge());
                         database.getReference(USERS_SIGN_IN_INFO).child(id).child(STATE).setValue(getNewState());
                         database.getReference(USERS_SIGN_IN_INFO).child(id).child(NAME).setValue(getNewName());
-                        goNext(id);
+                        goNext(id, login, getNewPassword());
                     }
                     else
                         Toast.makeText(SignActivity.this, getResources().getText(R.string.UserExistMessage),Toast.LENGTH_SHORT).show();

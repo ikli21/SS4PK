@@ -1,13 +1,19 @@
 package com.example.ss4pk;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Vibrator;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import static com.example.ss4pk.UserStaticInfo.LOGIN;
+import static com.example.ss4pk.UserStaticInfo.PASSWORD;
+
 public class Transform {
+    public static final String APP_PREFERENCES = "mysettings";
+
     public static Boolean StringNoNull(String string){
         if(string == null)
             return false;
@@ -46,5 +52,11 @@ public class Transform {
             md5Hex = "0"+md5Hex;
         }
         return md5Hex;
+    }
+    public static void SaveUser(SharedPreferences sp, String login, String password){
+        SharedPreferences.Editor e = sp.edit();
+        e.putString(LOGIN,login);
+        e.putString(PASSWORD,password);
+        e.apply();
     }
 }
